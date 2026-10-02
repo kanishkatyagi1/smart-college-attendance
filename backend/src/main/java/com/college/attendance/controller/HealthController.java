@@ -1,0 +1,1 @@
+package com.college.attendance.controller; import org.springframework.web.bind.annotation.*; @RestController public class HealthController { @GetMapping("/api/health") public Object health(){return java.util.Map.of("status","UP","service","smart-attendance-backend");} }

@@ -1,0 +1,6 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:padding="20dp" android:layout_width="match_parent" android:layout_height="match_parent">
+ <TextView android:text="Face Verification" android:textSize="24sp" android:textStyle="bold" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+ <TextView android:id="@+id/info" android:text="Capture one clear face." android:paddingTop="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+ <Button android:id="@+id/capture" android:text="OPEN CAMERA" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp"/>
+ <Button android:id="@+id/upload" android:text="VERIFY / REGISTER PHOTO" android:enabled="false" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp"/>
+</LinearLayout>

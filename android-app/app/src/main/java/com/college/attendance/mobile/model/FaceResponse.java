@@ -1,0 +1,1 @@
+package com.college.attendance.mobile.model; public class FaceResponse { public boolean verified; public boolean registered; public String message; public double similarity; }

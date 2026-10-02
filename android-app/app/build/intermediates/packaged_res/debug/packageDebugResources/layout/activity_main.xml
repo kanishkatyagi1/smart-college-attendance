@@ -1,0 +1,12 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#F4F7FB">
+ <LinearLayout android:orientation="vertical" android:padding="24dp" android:layout_width="match_parent" android:layout_height="wrap_content">
+  <TextView android:text="Smart College Attendance" android:textSize="28sp" android:textStyle="bold" android:textColor="#07579B" android:layout_marginTop="30dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+  <TextView android:text="Face Recognition / Fingerprint Based" android:textSize="15sp" android:layout_marginBottom="28dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+  <EditText android:id="@+id/email" android:hint="User ID / Email" android:inputType="textEmailAddress" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+  <EditText android:id="@+id/password" android:hint="Password" android:inputType="textPassword" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+  <Spinner android:id="@+id/role" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp"/>
+  <Button android:id="@+id/login" android:text="LOGIN" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="18dp"/>
+  <TextView android:id="@+id/status" android:text="" android:paddingTop="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+  <TextView android:text="Demo: student@example.com / student123\nteacher@example.com / teacher123\nhod@example.com / hod123" android:layout_marginTop="30dp" android:textSize="13sp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+ </LinearLayout>
+</ScrollView>

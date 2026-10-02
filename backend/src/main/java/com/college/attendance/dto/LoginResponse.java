@@ -1,0 +1,1 @@
+package com.college.attendance.dto; import lombok.*; @Getter @Setter @AllArgsConstructor public class LoginResponse { private String token; private String role; private Long userId; private String name; }

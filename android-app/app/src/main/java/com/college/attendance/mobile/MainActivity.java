@@ -1,0 +1,7 @@
+package com.college.attendance.mobile;
+import android.content.*; import android.os.Bundle; import android.widget.*; import androidx.appcompat.app.AppCompatActivity; import com.college.attendance.mobile.api.*; import com.college.attendance.mobile.model.*; import retrofit2.*;
+public class MainActivity extends AppCompatActivity {
+ EditText email,password; Spinner role; TextView status;
+ public void onCreate(Bundle b){super.onCreate(b);setContentView(R.layout.activity_main); email=findViewById(R.id.email);password=findViewById(R.id.password);role=findViewById(R.id.role);status=findViewById(R.id.status); role.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,new String[]{"STUDENT","TEACHER","HOD"})); findViewById(R.id.login).setOnClickListener(v->login());}
+ void login(){status.setText("Logging in..."); ApiClient.get(this).login(new LoginRequest(email.getText().toString().trim(),password.getText().toString(),role.getSelectedItem().toString())).enqueue(new Callback<LoginResponse>(){public void onResponse(Call<LoginResponse> c,Response<LoginResponse> r){if(r.isSuccessful()&&r.body()!=null){getSharedPreferences("auth",0).edit().putString("token",r.body().token).putString("role",r.body().role).putString("name",r.body().name).apply();startActivity(new Intent(MainActivity.this,com.college.attendance.mobile.ui.DashboardActivity.class));finish();}else status.setText("Invalid login / role");}public void onFailure(Call<LoginResponse> c,Throwable t){status.setText("Backend error: "+t.getMessage());}});}
+}

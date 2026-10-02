@@ -1,0 +1,8 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#F4F7FB">
+ <LinearLayout android:orientation="vertical" android:padding="16dp" android:layout_width="match_parent" android:layout_height="wrap_content">
+  <TextView android:id="@+id/title" android:text="Dashboard" android:textSize="26sp" android:textStyle="bold" android:textColor="#07579B" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+  <TextView android:id="@+id/welcome" android:textSize="16sp" android:layout_marginBottom="16dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+  <LinearLayout android:id="@+id/actions" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+  <TextView android:id="@+id/output" android:layout_marginTop="18dp" android:padding="12dp" android:textIsSelectable="true" android:background="#FFFFFF" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+ </LinearLayout>
+</ScrollView>

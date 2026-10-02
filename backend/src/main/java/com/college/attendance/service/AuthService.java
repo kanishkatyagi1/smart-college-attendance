@@ -1,0 +1,5 @@
+package com.college.attendance.service;
+import com.college.attendance.dto.*; import com.college.attendance.entity.*; import com.college.attendance.repo.UserRepository; import com.college.attendance.security.JwtService; import org.springframework.security.crypto.password.PasswordEncoder; import org.springframework.stereotype.Service;
+@Service public class AuthService { private final UserRepository users; private final PasswordEncoder enc; private final JwtService jwt; public AuthService(UserRepository u,PasswordEncoder e,JwtService j){users=u;enc=e;jwt=j;}
+ public LoginResponse login(LoginRequest r){ User u=users.findByEmail(r.getEmail()).orElseThrow(()->new RuntimeException("Invalid credentials")); if(!u.isActive()||!enc.matches(r.getPassword(),u.getPassword())) throw new RuntimeException("Invalid credentials"); if(r.getRole()!=null&&!r.getRole().isBlank()&&!u.getRole().name().equals(r.getRole().toUpperCase())) throw new RuntimeException("Role does not match account"); return new LoginResponse(jwt.generate(u.getId(),u.getEmail(),u.getRole().name()),u.getRole().name(),u.getId(),u.getName()); }
+}
