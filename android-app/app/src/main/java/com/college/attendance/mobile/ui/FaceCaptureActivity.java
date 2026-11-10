@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import com.college.attendance.mobile.R;
 import com.college.attendance.mobile.api.ApiClient;
 import com.college.attendance.mobile.model.FaceResponse;
+import com.college.attendance.mobile.util.LocationHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,6 +36,7 @@ public class FaceCaptureActivity extends AppCompatActivity {
 
  private static final int CAM = 77;
  private static final int CAMERA_PERMISSION = 100;
+ private static final int LOCATION_PERMISSION = 101;
 
  ImageView preview;
  Button capture, upload;
@@ -186,6 +188,22 @@ public class FaceCaptureActivity extends AppCompatActivity {
     );
    }
   }
+
+  if (requestCode == LOCATION_PERMISSION) {
+
+   if (grantResults.length > 0 &&
+           grantResults[0] ==
+                   PackageManager.PERMISSION_GRANTED) {
+
+    send();
+
+   } else {
+
+    info.setText(
+            "Location permission is required to mark attendance."
+    );
+   }
+  }
  }
 
 
@@ -291,7 +309,50 @@ public class FaceCaptureActivity extends AppCompatActivity {
  }
 
 
+ // Attendance needs a GPS fix (geofence); registration does not.
  private void send() {
+
+  if (register) {
+   sendWithLocation(null, null, null, null);
+   return;
+  }
+
+  if (!LocationHelper.hasPermission(this)) {
+   ActivityCompat.requestPermissions(
+           this,
+           new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+           LOCATION_PERMISSION
+   );
+   return;
+  }
+
+  upload.setEnabled(false);
+  capture.setEnabled(false);
+  info.setText("Getting your location...");
+
+  LocationHelper.fetch(this, new LocationHelper.Callback() {
+
+   @Override
+   public void onLocation(double lat, double lng, double accuracy, boolean mock) {
+    sendWithLocation(lat, lng, accuracy, mock);
+   }
+
+   @Override
+   public void onError(String message) {
+    upload.setEnabled(true);
+    capture.setEnabled(true);
+    info.setText(message);
+   }
+  });
+ }
+
+
+ private void sendWithLocation(
+         Double latitude,
+         Double longitude,
+         Double accuracy,
+         Boolean mock
+ ) {
 
   if (photo == null ||
           !photo.exists()) {
@@ -360,7 +421,6 @@ public class FaceCaptureActivity extends AppCompatActivity {
            ApiClient
                    .get(this)
                    .registerFace(
-                           studentId,
                            imagePart
                    );
 
@@ -370,8 +430,11 @@ public class FaceCaptureActivity extends AppCompatActivity {
            ApiClient
                    .get(this)
                    .verifyFace(
-                           studentId,
                            sessionId,
+                           latitude,
+                           longitude,
+                           accuracy,
+                           mock,
                            imagePart
                    );
   }
@@ -454,6 +517,13 @@ public class FaceCaptureActivity extends AppCompatActivity {
              info.setText(
                      "Face verified.\n"
                              + "Attendance marked PRESENT."
+             );
+
+            } else if ("LOCATION".equals(result.reason)) {
+
+             info.setText(
+                     "Attendance not marked.\n"
+                             + result.message
              );
 
             } else {

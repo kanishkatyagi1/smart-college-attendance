@@ -16,10 +16,13 @@ import com.college.attendance.repo.TeacherRepository;
 import com.college.attendance.repo.UserRepository;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/teacher")
@@ -179,6 +182,10 @@ public class TeacherController {
                         () -> new RuntimeException("Session not found")
                 );
 
+        if (!session.getTeacher().getId().equals(me().getId())) {
+            throw new AccessDeniedException("You do not own this attendance session");
+        }
+
         session.setActive(false);
         session.setEndTime(LocalDateTime.now());
 
@@ -210,6 +217,10 @@ public class TeacherController {
                         () -> new RuntimeException("Session not found")
                 );
 
+        if (!session.getTeacher().getId().equals(me().getId())) {
+            throw new AccessDeniedException("You do not own this attendance session");
+        }
+
         return records.findBySession(session);
     }
 
@@ -219,6 +230,10 @@ public class TeacherController {
 
     @GetMapping("/students")
     public List<Student> students() {
-        return students.findAll();
+        Set<Student> assignedStudents = new HashSet<>();
+        for (Subject subject : subjects.findByTeacher(me())) {
+            assignedStudents.addAll(students.findBySection(subject.getSection()));
+        }
+        return List.copyOf(assignedStudents);
     }
 }

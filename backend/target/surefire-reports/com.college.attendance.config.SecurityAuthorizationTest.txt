@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.college.attendance.config.SecurityAuthorizationTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.864 s -- in com.college.attendance.config.SecurityAuthorizationTest

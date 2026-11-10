@@ -4,17 +4,7 @@
     "type": "PACKAGED_MANIFESTS",
     "kind": "Directory"
   },
-  "applicationId": "com.college.attendance.mobile",
-  "variantName": "debug",
-  "elements": [
-    {
-      "type": "SINGLE",
-      "filters": [],
-      "attributes": [],
-      "versionCode": 1,
-      "versionName": "1.0",
-      "outputFile": "AndroidManifest.xml"
-    }
-  ],
-  "elementType": "File"
+  "applicationId": "unknown",
+  "variantName": "unknown",
+  "elements": []
 }

@@ -11,6 +11,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -25,6 +27,7 @@ public class FaceController {
     private final RestTemplate rest;
     private final AttendanceSessionRepository sessions;
     private final AttendanceRecordRepository records;
+    private final com.college.attendance.service.GeofenceService geofence;
 
     @Value("${face.service.url}")
     String faceUrl;
@@ -34,33 +37,35 @@ public class FaceController {
             UserRepository users,
             RestTemplate rest,
             AttendanceSessionRepository sessions,
-            AttendanceRecordRepository records) {
+            AttendanceRecordRepository records,
+            com.college.attendance.service.GeofenceService geofence) {
 
         this.students = students;
         this.users = users;
         this.rest = rest;
         this.sessions = sessions;
         this.records = records;
+        this.geofence = geofence;
     }
 
-    // =========================
-    // FACE REGISTRATION
-    // =========================
+    private Student currentStudent() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = users.findByEmail(email).orElseThrow(() -> new AccessDeniedException("Authenticated user not found"));
+        return students.findByUser(user).orElseThrow(() -> new AccessDeniedException("Student profile not found"));
+    }
+
     @PostMapping(
-            value = "/register/{studentId}",
+            value = "/register",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public Object register(
-            @PathVariable Long studentId,
             @RequestPart("image") MultipartFile image) throws IOException {
-
-        // Check student exists
-        students.findById(studentId).orElseThrow();
+        Student student = currentStudent();
 
         MultiValueMap<String, Object> body =
                 new LinkedMultiValueMap<>();
 
-        body.add("studentId", studentId.toString());
+        body.add("studentId", student.getId().toString());
 
         body.add("image", new ByteArrayResource(image.getBytes()) {
             @Override
@@ -95,13 +100,15 @@ public class FaceController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public Object verify(
-            @RequestParam Long studentId,
             @RequestParam Long sessionId,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude,
+            @RequestParam(required = false) Double accuracy,
+            @RequestParam(required = false) Boolean mockLocation,
             @RequestPart("image") MultipartFile image) throws IOException {
 
-        // 1. Find student
-        Student student =
-                students.findById(studentId).orElseThrow();
+        // Identity is always taken from the authenticated JWT principal.
+        Student student = currentStudent();
 
         // 2. Find attendance session
         AttendanceSession session =
@@ -137,6 +144,19 @@ public class FaceController {
             );
         }
 
+        // 5b. Geofence: student must be physically inside the ICT zone
+        var geo = geofence.check(latitude, longitude, accuracy, mockLocation);
+
+        if (!geo.allowed()) {
+
+            return Map.of(
+                    "verified", false,
+                    "attendanceMarked", false,
+                    "reason", "LOCATION",
+                    "message", geo.message()
+            );
+        }
+
         // 6. Check duplicate attendance
         if (records.existsBySessionAndStudent(session, student)) {
 
@@ -151,7 +171,7 @@ public class FaceController {
         MultiValueMap<String, Object> body =
                 new LinkedMultiValueMap<>();
 
-        body.add("studentId", studentId.toString());
+        body.add("studentId", student.getId().toString());
 
         body.add("image", new ByteArrayResource(image.getBytes()) {
             @Override
@@ -205,6 +225,10 @@ public class FaceController {
                             .markedAt(LocalDateTime.now())
                             .status("PRESENT")
                             .verificationMethod("FACE")
+                            .latitude(latitude)
+                            .longitude(longitude)
+                            .accuracyMeters(accuracy)
+                            .distanceMeters(geo.distanceMeters())
                             .build();
 
             AttendanceRecord saved =
@@ -215,7 +239,7 @@ public class FaceController {
                     "verified", true,
                     "attendanceMarked", true,
                     "attendanceId", saved.getId(),
-                    "studentId", studentId,
+                    "studentId", student.getId(),
                     "sessionId", sessionId,
                     "status", "PRESENT",
                     "verificationMethod", "FACE"

@@ -1,0 +1,5 @@
+com\college\attendance\security\JwtServiceTest.class
+com\college\attendance\util\GeoUtilsTest.class
+com\college\attendance\config\SecurityAuthorizationTest.class
+com\college\attendance\controller\TeacherControllerTest.class
+com\college\attendance\service\AuthServiceTest.class

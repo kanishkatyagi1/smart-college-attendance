@@ -1,6 +1,7 @@
 com\college\attendance\repo\FeedbackComplaintRepository.class
 com\college\attendance\entity\User.class
 com\college\attendance\controller\FaceController.class
+com\college\attendance\util\GeoUtils.class
 com\college\attendance\security\JwtFilter.class
 com\college\attendance\controller\FaceController$2.class
 com\college\attendance\entity\AttendanceSession.class
@@ -9,6 +10,7 @@ com\college\attendance\dto\SessionRequest.class
 com\college\attendance\entity\FeedbackComplaint$FeedbackComplaintBuilder.class
 com\college\attendance\entity\Student.class
 com\college\attendance\entity\Teacher.class
+com\college\attendance\service\GeofenceService.class
 com\college\attendance\dto\LoginResponse.class
 com\college\attendance\repo\AssignmentRepository.class
 com\college\attendance\entity\Subject.class
@@ -20,6 +22,7 @@ com\college\attendance\repo\AttendanceSessionRepository.class
 com\college\attendance\security\JwtService.class
 com\college\attendance\repo\UserRepository.class
 com\college\attendance\controller\FaceController$1.class
+com\college\attendance\service\GeofenceService$Result.class
 com\college\attendance\entity\Assignment$AssignmentBuilder.class
 com\college\attendance\config\DataInitializer.class
 com\college\attendance\repo\SubmissionRepository.class
@@ -47,3 +50,4 @@ com\college\attendance\repo\SubjectRepository.class
 com\college\attendance\controller\HealthController.class
 com\college\attendance\entity\User$UserBuilder.class
 com\college\attendance\service\AuthService.class
+com\college\attendance\config\ApiExceptionHandler.class

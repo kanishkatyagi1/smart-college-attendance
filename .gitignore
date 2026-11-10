@@ -1,0 +1,33 @@
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+application-local.properties
+application-local.yml
+*.pem
+*.key
+
+# Python
+face-service/.venv/
+face-service/venv/
+__pycache__/
+*.pyc
+
+# Android / Gradle
+.gradle/
+**/.gradle/
+**/build/
+local.properties
+*.apk
+*.aab
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Face datasets / generated face images
+face-service/faces/

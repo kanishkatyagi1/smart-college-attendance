@@ -1,14 +1,14 @@
 [
     {
-        "merged": "com.college.attendance.mobile.app-debug-31:/layout_activity_main.xml.flat",
-        "source": "com.college.attendance.mobile.app-main-33:/layout/activity_main.xml"
+        "merged": "com.college.attendance.mobile.app-debug-33:/layout_activity_face_capture.xml.flat",
+        "source": "com.college.attendance.mobile.app-main-35:/layout/activity_face_capture.xml"
     },
     {
-        "merged": "com.college.attendance.mobile.app-debug-31:/layout_activity_dashboard.xml.flat",
-        "source": "com.college.attendance.mobile.app-main-33:/layout/activity_dashboard.xml"
+        "merged": "com.college.attendance.mobile.app-debug-33:/layout_activity_main.xml.flat",
+        "source": "com.college.attendance.mobile.app-main-35:/layout/activity_main.xml"
     },
     {
-        "merged": "com.college.attendance.mobile.app-debug-31:/layout_activity_face_capture.xml.flat",
-        "source": "com.college.attendance.mobile.app-main-33:/layout/activity_face_capture.xml"
+        "merged": "com.college.attendance.mobile.app-debug-33:/layout_activity_dashboard.xml.flat",
+        "source": "com.college.attendance.mobile.app-main-35:/layout/activity_dashboard.xml"
     }
 ]

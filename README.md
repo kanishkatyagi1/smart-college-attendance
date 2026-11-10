@@ -25,6 +25,10 @@ Minor/Major project implementation based on the uploaded prototype.
 
 Change these immediately for any real deployment.
 
+## Local backend environment
+
+Before starting the backend, set `DB_PASSWORD` to the local MySQL password and `JWT_SECRET` to a private, random signing secret of at least 32 bytes. `DB_USERNAME` defaults to `root` and can be overridden. These values are intentionally not stored in `application.properties`.
+
 ## Folder structure
 ```
 smart-college-attendance/
