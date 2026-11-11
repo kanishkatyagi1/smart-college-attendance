@@ -32,5 +32,6 @@ public class User {
 
     private String phone;
 
-    private boolean active = true;
+    @Builder.Default
+private boolean active = true;
 }

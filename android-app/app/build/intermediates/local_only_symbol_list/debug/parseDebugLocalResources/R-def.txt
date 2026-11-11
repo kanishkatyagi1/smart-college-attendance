@@ -11,6 +11,7 @@ id info
 id login
 id output
 id password
+id progress
 id role
 id status
 id title

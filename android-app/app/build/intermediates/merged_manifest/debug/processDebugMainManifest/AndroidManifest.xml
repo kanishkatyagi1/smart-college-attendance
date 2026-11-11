@@ -24,6 +24,7 @@
         android:debuggable="true"
         android:extractNativeLibs="false"
         android:label="Smart Attendance"
+        android:testOnly="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true" >
         <activity android:name="com.college.attendance.mobile.ui.FaceCaptureActivity" />

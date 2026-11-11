@@ -10,6 +10,11 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+    @ExceptionHandler(com.college.attendance.service.AttendanceVerificationService.AttemptExpiredException.class)
+    ResponseEntity<Map<String, String>> attemptExpired() {
+        return ResponseEntity.status(HttpStatus.GONE).body(Map.of("message", "Verification attempt has expired"));
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     ResponseEntity<Map<String, String>> accessDenied(AccessDeniedException exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)

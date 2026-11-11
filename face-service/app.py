@@ -7,11 +7,16 @@ os.makedirs(DATA, exist_ok=True)
 CASCADE = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 def load_image(file):
+    if file is None or not file.filename:
+        return None
     raw = np.frombuffer(file.read(), np.uint8)
-    img = cv2.imdecode(raw, cv2.IMREAD_COLOR)
-    return img
+    if raw.size == 0:
+        return None
+    return cv2.imdecode(raw, cv2.IMREAD_COLOR)
 
 def crop_face(img):
+    if img is None:
+        return None, 0
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = CASCADE.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(80,80))
     if len(faces) != 1:
@@ -35,18 +40,23 @@ def health(): return jsonify({'status':'UP','service':'opencv-face-service'})
 @app.post('/register')
 def register():
     sid=request.form.get('studentId')
-    img=load_image(request.files['image'])
+    if not sid:
+        return jsonify({'registered':False,'message':'studentId is required'}),400
+    img=load_image(request.files.get('image'))
     face,count=crop_face(img)
     if face is None:return jsonify({'registered':False,'message':f'Expected exactly one face, found {count}'}),400
-    cv2.imwrite(os.path.join(DATA,f'{sid}.png'),face)
+    if not cv2.imwrite(os.path.join(DATA,f'{sid}.png'),face):
+        return jsonify({'registered':False,'message':'Unable to store face data'}),500
     return jsonify({'registered':True,'studentId':sid})
 
 @app.post('/verify')
 def verify():
     sid=request.form.get('studentId')
+    if not sid:
+        return jsonify({'verified':False,'message':'studentId is required'}),400
     path=os.path.join(DATA,f'{sid}.png')
     if not os.path.exists(path):return jsonify({'verified':False,'message':'Face is not registered'}),404
-    img=load_image(request.files['image'])
+    img=load_image(request.files.get('image'))
     face,count=crop_face(img)
     if face is None:return jsonify({'verified':False,'message':f'Expected exactly one face, found {count}'}),400
     ref=cv2.imread(path,cv2.IMREAD_GRAYSCALE)

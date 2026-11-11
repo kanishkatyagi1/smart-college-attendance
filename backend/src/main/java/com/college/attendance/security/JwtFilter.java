@@ -7,4 +7,13 @@ import jakarta.servlet.*; import jakarta.servlet.http.*; import org.springframew
  private final JwtService jwt; private final UserRepository users;
  public JwtFilter(JwtService jwt, UserRepository users){this.jwt=jwt;this.users=users;}
  @Override public void doFilterInternal(HttpServletRequest req,HttpServletResponse res,FilterChain chain)throws ServletException,IOException{ String h=req.getHeader("Authorization"); if(h!=null){ if(!h.startsWith("Bearer ")||h.length()<=7){res.sendError(HttpStatus.UNAUTHORIZED.value(),"Invalid Authorization header");return;} try{var c=jwt.parse(h.substring(7)); Number uidClaim=c.get("uid",Number.class); Long uid=uidClaim==null?null:uidClaim.longValue(); String email=c.getSubject(); String role=c.get("role",String.class); if(uid==null||email==null||email.isBlank()||role==null||role.isBlank()) throw new IllegalArgumentException("Required JWT claims are missing"); User u=users.findById(uid).filter(user->user.isActive()&&email.equals(user.getEmail())&&role.equals(user.getRole().name())).orElseThrow(()->new IllegalArgumentException("JWT user is no longer valid")); var a=new UsernamePasswordAuthenticationToken(u.getEmail(),null,List.of(new SimpleGrantedAuthority("ROLE_"+u.getRole().name()))); SecurityContextHolder.getContext().setAuthentication(a);}catch(Exception ignored){SecurityContextHolder.clearContext();res.sendError(HttpStatus.UNAUTHORIZED.value(),"Invalid or expired token");return;}} chain.doFilter(req,res); }
+
+@Override
+protected boolean shouldNotFilter(HttpServletRequest request) {
+    String path = request.getServletPath();
+
+    return path.startsWith("/api/auth/")
+            || path.equals("/api/health");
+}
+
 }

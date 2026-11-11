@@ -15,9 +15,12 @@ C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-a
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\dto\LoginResponse.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\dto\MarkAttendanceRequest.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\dto\SessionRequest.java
+C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\dto\VerificationAttemptRequest.java
+C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\dto\VerificationAttemptResponse.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\entity\Assignment.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\entity\AttendanceRecord.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\entity\AttendanceSession.java
+C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\entity\AttendanceVerificationAttempt.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\entity\FeedbackComplaint.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\entity\Role.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\entity\Student.java
@@ -25,9 +28,11 @@ C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-a
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\entity\Submission.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\entity\Teacher.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\entity\User.java
+C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\entity\VerificationAttemptStatus.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\repo\AssignmentRepository.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\repo\AttendanceRecordRepository.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\repo\AttendanceSessionRepository.java
+C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\repo\AttendanceVerificationAttemptRepository.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\repo\FeedbackComplaintRepository.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\repo\StudentRepository.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\repo\SubjectRepository.java
@@ -36,6 +41,7 @@ C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-a
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\repo\UserRepository.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\security\JwtFilter.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\security\JwtService.java
+C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\service\AttendanceVerificationService.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\service\AuthService.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\service\GeofenceService.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\main\java\com\college\attendance\util\GeoUtils.java

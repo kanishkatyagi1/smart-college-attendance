@@ -1,9 +1,11 @@
+com\college\attendance\service\AttendanceVerificationService.class
 com\college\attendance\repo\FeedbackComplaintRepository.class
 com\college\attendance\entity\User.class
+com\college\attendance\service\AttendanceVerificationService$AttemptExpiredException.class
 com\college\attendance\controller\FaceController.class
 com\college\attendance\util\GeoUtils.class
 com\college\attendance\security\JwtFilter.class
-com\college\attendance\controller\FaceController$2.class
+com\college\attendance\entity\VerificationAttemptStatus.class
 com\college\attendance\entity\AttendanceSession.class
 com\college\attendance\repo\AttendanceRecordRepository.class
 com\college\attendance\dto\SessionRequest.class
@@ -30,12 +32,16 @@ com\college\attendance\entity\Submission$SubmissionBuilder.class
 com\college\attendance\controller\AcademicController.class
 com\college\attendance\dto\LoginRequest.class
 com\college\attendance\config\RestConfig.class
+com\college\attendance\entity\AttendanceVerificationAttempt$AttendanceVerificationAttemptBuilder.class
 com\college\attendance\controller\HodController.class
+com\college\attendance\dto\VerificationAttemptRequest.class
 com\college\attendance\entity\FeedbackComplaint.class
 com\college\attendance\entity\Assignment.class
 com\college\attendance\repo\StudentRepository.class
 com\college\attendance\entity\AttendanceRecord.class
+com\college\attendance\entity\AttendanceVerificationAttempt.class
 com\college\attendance\entity\Student$StudentBuilder.class
+com\college\attendance\dto\VerificationAttemptResponse.class
 com\college\attendance\dto\ComplaintRequest.class
 com\college\attendance\entity\Role.class
 com\college\attendance\entity\Subject$SubjectBuilder.class
@@ -49,5 +55,6 @@ com\college\attendance\controller\AuthController.class
 com\college\attendance\repo\SubjectRepository.class
 com\college\attendance\controller\HealthController.class
 com\college\attendance\entity\User$UserBuilder.class
+com\college\attendance\repo\AttendanceVerificationAttemptRepository.class
 com\college\attendance\service\AuthService.class
 com\college\attendance\config\ApiExceptionHandler.class

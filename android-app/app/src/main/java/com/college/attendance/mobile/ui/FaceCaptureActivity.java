@@ -44,8 +44,7 @@ public class FaceCaptureActivity extends AppCompatActivity {
 
  File photo;
 
- Long studentId;
- Long sessionId;
+ String attemptId;
 
  boolean register;
 
@@ -61,25 +60,12 @@ public class FaceCaptureActivity extends AppCompatActivity {
   upload = findViewById(R.id.upload);
   info = findViewById(R.id.info);
 
-  studentId =
-          getIntent().getLongExtra("studentId", 0);
-
-  sessionId =
-          getIntent().getLongExtra("sessionId", 0);
+  attemptId = getIntent().getStringExtra("attemptId");
 
   register =
           getIntent().getBooleanExtra("register", false);
 
-  if (studentId == 0) {
-
-   info.setText("Invalid student ID.");
-   capture.setEnabled(false);
-   upload.setEnabled(false);
-
-   return;
-  }
-
-  if (!register && sessionId == 0) {
+  if (!register && (attemptId == null || attemptId.isEmpty())) {
 
    info.setText("No active attendance session found.");
    capture.setEnabled(false);
@@ -266,7 +252,7 @@ public class FaceCaptureActivity extends AppCompatActivity {
 
 
    // Show captured image
-   preview.setImageBitmap(bitmap);
+   if (preview != null) preview.setImageBitmap(bitmap);
 
 
    // Save image into app cache
@@ -365,20 +351,8 @@ public class FaceCaptureActivity extends AppCompatActivity {
   }
 
 
-  if (studentId == null ||
-          studentId == 0) {
-
-   info.setText(
-           "Invalid student ID."
-   );
-
-   return;
-  }
-
-
   if (!register &&
-          (sessionId == null ||
-                  sessionId == 0)) {
+          (attemptId == null || attemptId.isEmpty())) {
 
    info.setText(
            "Invalid attendance session."
@@ -430,7 +404,7 @@ public class FaceCaptureActivity extends AppCompatActivity {
            ApiClient
                    .get(this)
                    .verifyFace(
-                           sessionId,
+                           attemptId,
                            latitude,
                            longitude,
                            accuracy,
@@ -477,6 +451,21 @@ public class FaceCaptureActivity extends AppCompatActivity {
 
               errorMessage =
                       "Invalid face or attendance request.";
+
+             } else if (response.code() == 409) {
+
+              errorMessage =
+                      "Attendance already marked, session closed, or verification already used.";
+
+             } else if (response.code() == 410) {
+
+              errorMessage =
+                      "Verification expired. Start attendance again.";
+
+             } else if (response.code() == 503) {
+
+              errorMessage =
+                      "Face verification service is unavailable. Please try again later.";
              }
 
 
@@ -512,7 +501,7 @@ public class FaceCaptureActivity extends AppCompatActivity {
 
 
             // Attendance flow
-            if (result.verified) {
+            if (result.verified && result.attendanceMarked) {
 
              info.setText(
                      "Face verified.\n"

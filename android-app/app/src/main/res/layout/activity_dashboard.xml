@@ -1,8 +1,94 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#F4F7FB">
- <LinearLayout android:orientation="vertical" android:padding="16dp" android:layout_width="match_parent" android:layout_height="wrap_content">
-  <TextView android:id="@+id/title" android:text="Dashboard" android:textSize="26sp" android:textStyle="bold" android:textColor="#07579B" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-  <TextView android:id="@+id/welcome" android:textSize="16sp" android:layout_marginBottom="16dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-  <LinearLayout android:id="@+id/actions" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-  <TextView android:id="@+id/output" android:layout_marginTop="18dp" android:padding="12dp" android:textIsSelectable="true" android:background="#FFFFFF" android:layout_width="match_parent" android:layout_height="wrap_content"/>
- </LinearLayout>
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F7FB"
+    android:fillViewport="true"
+    android:scrollbars="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Dashboard Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="#FFFFFF"
+            android:elevation="3dp">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TEACHER DASHBOARD"
+                android:textColor="#07579B"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.02" />
+
+            <TextView
+                android:id="@+id/welcome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Welcome, Teacher"
+                android:textColor="#64748B"
+                android:textSize="15sp"
+                android:lineSpacingExtra="3dp" />
+
+        </LinearLayout>
+
+        <!-- Section Heading -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:layout_marginBottom="12dp"
+            android:text="QUICK ACCESS"
+            android:textColor="#334155"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08" />
+
+        <!-- Dynamic Actions and Cards -->
+        <LinearLayout
+            android:id="@+id/actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <!-- Loading Indicator -->
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:visibility="gone" />
+
+        <!-- Dynamic Output -->
+        <TextView
+            android:id="@+id/output"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="18dp"
+            android:background="#FFFFFF"
+            android:textColor="#334155"
+            android:textSize="14sp"
+            android:lineSpacingExtra="4dp"
+            android:visibility="gone"
+            android:elevation="2dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="24dp" />
+
+    </LinearLayout>
+
 </ScrollView>

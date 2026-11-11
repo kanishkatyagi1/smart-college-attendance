@@ -1,5 +1,6 @@
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\test\java\com\college\attendance\config\SecurityAuthorizationTest.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\test\java\com\college\attendance\controller\TeacherControllerTest.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\test\java\com\college\attendance\security\JwtServiceTest.java
+C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\test\java\com\college\attendance\service\AttendanceVerificationServiceTest.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\test\java\com\college\attendance\service\AuthServiceTest.java
 C:\Users\kanis\Downloads\smart-college-attendance-geo-integrated\smart-college-attendance\backend\src\test\java\com\college\attendance\util\GeoUtilsTest.java
