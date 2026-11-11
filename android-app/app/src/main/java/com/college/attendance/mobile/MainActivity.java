@@ -15,5 +15,18 @@ public class MainActivity extends AppCompatActivity {
   }
 
   status.setText("Login failed (" + r.code() + "): " + error);
- }}public void onFailure(Call<LoginResponse> c,Throwable t){status.setText("Backend error: "+t.getMessage());}});}
+ }}public void onFailure(Call<LoginResponse> c,Throwable t){status.setText("Backend error: "+t.getMessage());}});}private void logout() {
+    getSharedPreferences("auth", MODE_PRIVATE)
+            .edit()
+            .clear()
+            .apply();
+
+    Intent intent = new Intent(this, MainActivity.class);
+    intent.setFlags(
+            Intent.FLAG_ACTIVITY_NEW_TASK |
+            Intent.FLAG_ACTIVITY_CLEAR_TASK
+    );
+    startActivity(intent);
+    finish();
+}
 }

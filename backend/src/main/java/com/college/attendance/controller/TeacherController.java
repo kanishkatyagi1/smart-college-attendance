@@ -1,5 +1,6 @@
 package com.college.attendance.controller;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import com.college.attendance.dto.SessionRequest;
 import com.college.attendance.entity.Assignment;
 import com.college.attendance.entity.AttendanceRecord;
@@ -131,42 +132,53 @@ public class TeacherController {
     // CREATE ATTENDANCE SESSION
     // =========================
 
-    @PostMapping("/session/create")
-    public AttendanceSession create(
-            @RequestBody SessionRequest r) {
+    
+@PostMapping("/session/create")
+public AttendanceSession create(@RequestBody SessionRequest r) {
 
-        Subject sub = subjects
-                .findById(r.getSubjectId())
-                .orElseThrow(
-                        () -> new RuntimeException("Subject not found")
-                );
+    Subject sub = subjects.findById(r.getSubjectId())
+            .orElseThrow(() ->
+                    new RuntimeException("Subject not found"));
 
-        Teacher teacher = me();
+    Teacher teacher = me();
 
-        // Check subject ownership
-        if (!sub.getTeacher().getId().equals(teacher.getId())) {
-
-            throw new RuntimeException("Not your subject");
-        }
-
-        LocalDateTime now = LocalDateTime.now();
-
-        AttendanceSession session =
-                AttendanceSession.builder()
-                        .subject(sub)
-                        .teacher(teacher)
-                        .section(r.getSection())
-                        .startTime(now)
-                        .endTime(
-                                now.plusMinutes(
-                                        r.getDurationMinutes()
-                                )
-                        )
-                        .active(true)
-                        .build();
-
-        return sessions.save(session);
+    if (!sub.getTeacher().getId().equals(teacher.getId())) {
+        throw new AccessDeniedException("Not your subject");
     }
+
+    String section = r.getSection();
+
+    if (section == null || !sub.getSection().equals(section)) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Invalid section for this subject"
+        );
+    }
+
+    LocalDateTime now = LocalDateTime.now();
+
+    if (sessions
+            .findFirstBySubjectAndSectionAndActiveTrueAndEndTimeAfter(
+                    sub, section, now)
+            .isPresent()) {
+
+        throw new ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "An attendance session is already active for this class."
+        );
+    }
+
+    AttendanceSession session = AttendanceSession.builder()
+            .subject(sub)
+            .teacher(teacher)
+            .section(section)
+            .startTime(now)
+            .endTime(now.plusMinutes(r.getDurationMinutes()))
+            .active(true)
+            .build();
+
+    return sessions.save(session);
+}
 
     // =========================
     // CLOSE ATTENDANCE SESSION
