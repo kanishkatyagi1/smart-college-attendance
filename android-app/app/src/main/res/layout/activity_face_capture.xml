@@ -1,6 +1,51 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:padding="20dp" android:layout_width="match_parent" android:layout_height="match_parent">
- <TextView android:text="Face Verification" android:textSize="24sp" android:textStyle="bold" android:layout_width="match_parent" android:layout_height="wrap_content"/>
- <TextView android:id="@+id/info" android:text="Capture one clear face." android:paddingTop="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
- <Button android:id="@+id/capture" android:text="OPEN CAMERA" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp"/>
- <Button android:id="@+id/upload" android:text="VERIFY / REGISTER PHOTO" android:enabled="false" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#FDF8FF">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Face Verification"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#292333" />
+
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Position your face inside the camera preview."
+        android:textSize="14sp"
+        android:textColor="#49454F"
+        android:paddingTop="10dp"
+        android:paddingBottom="12dp" />
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/cameraPreview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#202020"
+        app:scaleType="fitCenter"
+        app:implementationMode="compatible" />
+
+    <Button
+        android:id="@+id/capture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="OPEN CAMERA" />
+
+    <Button
+        android:id="@+id/upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="VERIFY / REGISTER PHOTO"
+        android:enabled="false" />
+
 </LinearLayout>

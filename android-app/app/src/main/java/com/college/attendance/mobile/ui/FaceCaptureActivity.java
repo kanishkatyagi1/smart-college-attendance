@@ -1,17 +1,21 @@
+
 package com.college.attendance.mobile.ui;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.view.Surface;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.Preview;
+import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -19,9 +23,9 @@ import com.college.attendance.mobile.R;
 import com.college.attendance.mobile.api.ApiClient;
 import com.college.attendance.mobile.model.FaceResponse;
 import com.college.attendance.mobile.util.LocationHelper;
+import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -31,516 +35,471 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 public class FaceCaptureActivity extends AppCompatActivity {
 
- private static final int CAM = 77;
- private static final int CAMERA_PERMISSION = 100;
- private static final int LOCATION_PERMISSION = 101;
+    private static final int CAMERA_PERMISSION = 100;
+    private static final int LOCATION_PERMISSION = 101;
 
- ImageView preview;
- Button capture, upload;
- TextView info;
+    private PreviewView cameraPreview;
+    private Button capture;
+    private Button upload;
+    private TextView info;
 
- File photo;
+    private ImageCapture imageCapture;
+    private ProcessCameraProvider cameraProvider;
 
- String attemptId;
+    private File photo;
 
- boolean register;
+    private String attemptId;
+    private boolean register;
 
+    @Override
+    protected void onCreate(Bundle b) {
+        super.onCreate(b);
+        setContentView(R.layout.activity_face_capture);
 
- @Override
- protected void onCreate(Bundle b) {
+        cameraPreview = findViewById(R.id.cameraPreview);
+        capture = findViewById(R.id.capture);
+        upload = findViewById(R.id.upload);
+        info = findViewById(R.id.info);
 
-  super.onCreate(b);
+        attemptId = getIntent().getStringExtra("attemptId");
+        register = getIntent().getBooleanExtra("register", false);
 
-  setContentView(R.layout.activity_face_capture);
+        if (!register && (attemptId == null || attemptId.isEmpty())) {
+            info.setText("No active attendance session found.");
+            capture.setEnabled(false);
+            upload.setEnabled(false);
+            return;
+        }
 
-  capture = findViewById(R.id.capture);
-  upload = findViewById(R.id.upload);
-  info = findViewById(R.id.info);
+        info.setText(register
+                ? "Register one clear face for future verification."
+                : "Capture one clear face for the active attendance session.");
 
-  attemptId = getIntent().getStringExtra("attemptId");
+        upload.setEnabled(false);
 
-  register =
-          getIntent().getBooleanExtra("register", false);
+        capture.setOnClickListener(v -> {
+            if (imageCapture == null) {
+                openCamera();
+            } else {
+                capturePhoto();
+            }
+        });
 
-  if (!register && (attemptId == null || attemptId.isEmpty())) {
+        upload.setOnClickListener(v -> send());
+    }
 
-   info.setText("No active attendance session found.");
-   capture.setEnabled(false);
-   upload.setEnabled(false);
+    // Camera permission and CameraX initialization
+    private void openCamera() {
 
-   return;
-  }
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+        ) != PackageManager.PERMISSION_GRANTED) {
 
-  info.setText(
-          register
-                  ? "Register one clear face for future verification."
-                  : "Capture one clear face for the active attendance session."
-  );
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.CAMERA},
+                    CAMERA_PERMISSION
+            );
 
-  upload.setEnabled(false);
+            return;
+        }
 
-  capture.setOnClickListener(v -> openCamera());
+        startCamera();
+    }
 
-  upload.setOnClickListener(v -> send());
- }
+    // Start the front camera with an in-app preview
+    private void startCamera() {
 
+        info.setText("Starting front camera...");
+        capture.setEnabled(false);
 
- private void openCamera() {
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
+                ProcessCameraProvider.getInstance(this);
 
-  // Check camera permission
-  if (ContextCompat.checkSelfPermission(
-          this,
-          Manifest.permission.CAMERA
-  ) != PackageManager.PERMISSION_GRANTED) {
+        cameraProviderFuture.addListener(() -> {
 
-   ActivityCompat.requestPermissions(
-           this,
-           new String[]{
-                   Manifest.permission.CAMERA
-           },
-           CAMERA_PERMISSION
-   );
+            try {
+                cameraProvider = cameraProviderFuture.get();
 
-   return;
-  }
+                Preview preview = new Preview.Builder().build();
 
+                preview.setSurfaceProvider(
+                        cameraPreview.getSurfaceProvider()
+                );
 
-  // Check whether camera application is available
-  Intent cameraIntent =
-          new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                int rotation = cameraPreview.getDisplay() != null
+                        ? cameraPreview.getDisplay().getRotation()
+                        : Surface.ROTATION_0;
 
-  if (cameraIntent.resolveActivity(
-          getPackageManager()
-  ) == null) {
+                imageCapture = new ImageCapture.Builder()
+                        .setCaptureMode(
+                                ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
+                        )
+                        .setTargetRotation(rotation)
+                        .build();
 
-   info.setText(
-           "Camera application is not available."
-   );
+                CameraSelector cameraSelector =
+                        CameraSelector.DEFAULT_FRONT_CAMERA;
 
-   return;
-  }
+                cameraProvider.unbindAll();
 
+                cameraProvider.bindToLifecycle(
+                        this,
+                        cameraSelector,
+                        preview,
+                        imageCapture
+                );
 
-  try {
+                info.setText(
+                        "Position your face clearly inside the preview."
+                );
 
-   startActivityForResult(
-           cameraIntent,
-           CAM
-   );
+                capture.setText("CAPTURE PHOTO");
+                capture.setEnabled(true);
 
-  } catch (Exception e) {
+            } catch (Exception e) {
 
-   info.setText(
-           "Unable to open camera: "
-                   + e.getMessage()
-   );
-  }
- }
+                imageCapture = null;
+                capture.setEnabled(true);
 
-
- @Override
- public void onRequestPermissionsResult(
-         int requestCode,
-         @NonNull String[] permissions,
-         @NonNull int[] grantResults
- ) {
-
-  super.onRequestPermissionsResult(
-          requestCode,
-          permissions,
-          grantResults
-  );
-
-
-  if (requestCode == CAMERA_PERMISSION) {
-
-   if (grantResults.length > 0 &&
-           grantResults[0] ==
-                   PackageManager.PERMISSION_GRANTED) {
-
-    info.setText(
-            "Camera permission granted. Opening camera..."
-    );
-
-    openCamera();
-
-   } else {
-
-    info.setText(
-            "Camera permission is required."
-    );
-   }
-  }
-
-  if (requestCode == LOCATION_PERMISSION) {
-
-   if (grantResults.length > 0 &&
-           grantResults[0] ==
-                   PackageManager.PERMISSION_GRANTED) {
-
-    send();
-
-   } else {
-
-    info.setText(
-            "Location permission is required to mark attendance."
-    );
-   }
-  }
- }
-
-
- @Override
- protected void onActivityResult(
-         int requestCode,
-         int resultCode,
-         Intent data
- ) {
-
-  super.onActivityResult(
-          requestCode,
-          resultCode,
-          data
-  );
-
-
-  if (requestCode != CAM) {
-   return;
-  }
-
-
-  if (resultCode != RESULT_OK) {
-
-   info.setText(
-           "Camera cancelled."
-   );
-
-   return;
-  }
-
-
-  if (data == null ||
-          data.getExtras() == null) {
-
-   info.setText(
-           "No image received from camera."
-   );
-
-   return;
-  }
-
-
-  try {
-
-   Bitmap bitmap =
-           (Bitmap) data
-                   .getExtras()
-                   .get("data");
-
-
-   if (bitmap == null) {
-
-    info.setText(
-            "Unable to capture image."
-    );
-
-    return;
-   }
-
-
-   // Show captured image
-   if (preview != null) preview.setImageBitmap(bitmap);
-
-
-   // Save image into app cache
-   photo =
-           new File(
-                   getCacheDir(),
-                   "face.jpg"
-           );
-
-
-   FileOutputStream outputStream =
-           new FileOutputStream(photo);
-
-
-   bitmap.compress(
-           Bitmap.CompressFormat.JPEG,
-           90,
-           outputStream
-   );
-
-
-   outputStream.flush();
-   outputStream.close();
-
-
-   info.setText(
-           "Photo captured. Tap Upload."
-   );
-
-
-   upload.setEnabled(true);
-
-  } catch (Exception e) {
-
-   info.setText(
-           "Image processing error: "
-                   + e.getMessage()
-   );
-  }
- }
-
-
- // Attendance needs a GPS fix (geofence); registration does not.
- private void send() {
-
-  if (register) {
-   sendWithLocation(null, null, null, null);
-   return;
-  }
-
-  if (!LocationHelper.hasPermission(this)) {
-   ActivityCompat.requestPermissions(
-           this,
-           new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-           LOCATION_PERMISSION
-   );
-   return;
-  }
-
-  upload.setEnabled(false);
-  capture.setEnabled(false);
-  info.setText("Getting your location...");
-
-  LocationHelper.fetch(this, new LocationHelper.Callback() {
-
-   @Override
-   public void onLocation(double lat, double lng, double accuracy, boolean mock) {
-    sendWithLocation(lat, lng, accuracy, mock);
-   }
-
-   @Override
-   public void onError(String message) {
-    upload.setEnabled(true);
-    capture.setEnabled(true);
-    info.setText(message);
-   }
-  });
- }
-
-
- private void sendWithLocation(
-         Double latitude,
-         Double longitude,
-         Double accuracy,
-         Boolean mock
- ) {
-
-  if (photo == null ||
-          !photo.exists()) {
-
-   info.setText(
-           "Please capture a photo first."
-   );
-
-   return;
-  }
-
-
-  if (!register &&
-          (attemptId == null || attemptId.isEmpty())) {
-
-   info.setText(
-           "Invalid attendance session."
-   );
-
-   return;
-  }
-
-
-  // Disable button while uploading
-  upload.setEnabled(false);
-  capture.setEnabled(false);
-
-  info.setText(
-          "Verifying face..."
-  );
-
-
-  RequestBody requestBody =
-          RequestBody.create(
-                  photo,
-                  MediaType.parse("image/jpeg")
-          );
-
-
-  MultipartBody.Part imagePart =
-          MultipartBody.Part.createFormData(
-                  "image",
-                  photo.getName(),
-                  requestBody
-          );
-
-
-  Call<FaceResponse> call;
-
-
-  if (register) {
-
-   call =
-           ApiClient
-                   .get(this)
-                   .registerFace(
-                           imagePart
-                   );
-
-  } else {
-
-   call =
-           ApiClient
-                   .get(this)
-                   .verifyFace(
-                           attemptId,
-                           latitude,
-                           longitude,
-                           accuracy,
-                           mock,
-                           imagePart
-                   );
-  }
-
-
-  call.enqueue(
-          new Callback<FaceResponse>() {
-
-           @Override
-           public void onResponse(
-                   Call<FaceResponse> call,
-                   Response<FaceResponse> response
-           ) {
-
-            upload.setEnabled(true);
-            capture.setEnabled(true);
-
-
-            FaceResponse result =
-                    response.body();
-
-
-            if (!response.isSuccessful() ||
-                    result == null) {
-
-             String errorMessage =
-                     "Face verification failed";
-
-             if (response.code() == 401) {
-
-              errorMessage =
-                      "Session expired. Please login again.";
-
-             } else if (response.code() == 404) {
-
-              errorMessage =
-                      "Student or attendance session not found.";
-
-             } else if (response.code() == 400) {
-
-              errorMessage =
-                      "Invalid face or attendance request.";
-
-             } else if (response.code() == 409) {
-
-              errorMessage =
-                      "Attendance already marked, session closed, or verification already used.";
-
-             } else if (response.code() == 410) {
-
-              errorMessage =
-                      "Verification expired. Start attendance again.";
-
-             } else if (response.code() == 503) {
-
-              errorMessage =
-                      "Face verification service is unavailable. Please try again later.";
-             }
-
-
-             info.setText(
-                     errorMessage
-                             + "\nHTTP "
-                             + response.code()
-             );
-
-             return;
+                info.setText(
+                        "Unable to start camera: " + e.getMessage()
+                );
             }
 
+        }, ContextCompat.getMainExecutor(this));
+    }
 
-            // Registration flow
-            if (register) {
+    // Capture a full-resolution photograph
+    private void capturePhoto() {
 
-             if (result.registered) {
+        if (imageCapture == null) {
+            info.setText("Please start the camera first.");
+            return;
+        }
 
-              info.setText(
-                      "Face registered successfully."
-              );
+        photo = new File(getCacheDir(), "face.jpg");
 
-             } else {
+        if (photo.exists()) {
+            photo.delete();
+        }
 
-              info.setText(
-                      "Registration failed: "
-                              + result.message
-              );
-             }
+        ImageCapture.OutputFileOptions outputOptions =
+                new ImageCapture.OutputFileOptions.Builder(photo)
+                        .build();
 
-             return;
-            }
+        capture.setEnabled(false);
+        upload.setEnabled(false);
 
+        info.setText("Capturing photograph...");
 
-            // Attendance flow
-            if (result.verified && result.attendanceMarked) {
+        imageCapture.takePicture(
+                outputOptions,
+                ContextCompat.getMainExecutor(this),
+                new ImageCapture.OnImageSavedCallback() {
 
-             info.setText(
-                     "Face verified.\n"
-                             + "Attendance marked PRESENT."
-             );
+                    @Override
+                    public void onImageSaved(
+                            @NonNull ImageCapture.OutputFileResults output
+                    ) {
 
-            } else if ("LOCATION".equals(result.reason)) {
+                        capture.setEnabled(true);
+                        capture.setText("RETAKE PHOTO");
 
-             info.setText(
-                     "Attendance not marked.\n"
-                             + result.message
-             );
+                        upload.setEnabled(true);
+
+                        info.setText(
+                                "Photo captured successfully. Tap Verify / Register Photo."
+                        );
+                    }
+
+                    @Override
+                    public void onError(
+                            @NonNull ImageCaptureException exception
+                    ) {
+
+                        capture.setEnabled(true);
+                        upload.setEnabled(false);
+
+                        info.setText(
+                                "Photo capture failed: "
+                                        + exception.getMessage()
+                        );
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults
+    ) {
+
+        super.onRequestPermissionsResult(
+                requestCode,
+                permissions,
+                grantResults
+        );
+
+        if (requestCode == CAMERA_PERMISSION) {
+
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                openCamera();
 
             } else {
 
-             info.setText(
-                     "Face rejected: "
-                             + result.message
-             );
+                info.setText("Camera permission is required.");
             }
-           }
+        }
 
+        if (requestCode == LOCATION_PERMISSION) {
 
-           @Override
-           public void onFailure(
-                   Call<FaceResponse> call,
-                   Throwable t
-           ) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-            upload.setEnabled(true);
-            capture.setEnabled(true);
+                send();
 
+            } else {
 
-            info.setText(
-                    "Network error:\n"
-                            + t.getMessage()
+                info.setText(
+                        "Location permission is required to mark attendance."
+                );
+            }
+        }
+    }
+
+    // Registration does not require GPS. Attendance does.
+    private void send() {
+
+        if (register) {
+            sendWithLocation(null, null, null, null);
+            return;
+        }
+
+        if (!LocationHelper.hasPermission(this)) {
+
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    LOCATION_PERMISSION
             );
-           }
-          }
-  );
- }
+
+            return;
+        }
+
+        upload.setEnabled(false);
+        capture.setEnabled(false);
+
+        info.setText("Getting your location...");
+
+        LocationHelper.fetch(this, new LocationHelper.Callback() {
+
+            @Override
+            public void onLocation(
+                    double lat,
+                    double lng,
+                    double accuracy,
+                    boolean mock
+            ) {
+
+                sendWithLocation(lat, lng, accuracy, mock);
+            }
+
+            @Override
+            public void onError(String message) {
+
+                upload.setEnabled(true);
+                capture.setEnabled(true);
+
+                info.setText(message);
+            }
+        });
+    }
+
+    private void sendWithLocation(
+            Double latitude,
+            Double longitude,
+            Double accuracy,
+            Boolean mock
+    ) {
+
+        if (photo == null || !photo.exists()) {
+
+            info.setText("Please capture a photo first.");
+            capture.setEnabled(true);
+            return;
+        }
+
+        if (!register && (attemptId == null || attemptId.isEmpty())) {
+
+            info.setText("Invalid attendance session.");
+            return;
+        }
+
+        upload.setEnabled(false);
+        capture.setEnabled(false);
+
+        info.setText("Verifying face...");
+
+        RequestBody requestBody = RequestBody.create(
+                photo,
+                MediaType.parse("image/jpeg")
+        );
+
+        MultipartBody.Part imagePart =
+                MultipartBody.Part.createFormData(
+                        "image",
+                        photo.getName(),
+                        requestBody
+                );
+
+        Call<FaceResponse> call;
+
+        if (register) {
+
+            call = ApiClient
+                    .get(this)
+                    .registerFace(imagePart);
+
+        } else {
+
+            call = ApiClient
+                    .get(this)
+                    .verifyFace(
+                            attemptId,
+                            latitude,
+                            longitude,
+                            accuracy,
+                            mock,
+                            imagePart
+                    );
+        }
+
+        call.enqueue(new Callback<FaceResponse>() {
+
+            @Override
+            public void onResponse(
+                    Call<FaceResponse> call,
+                    Response<FaceResponse> response
+            ) {
+
+                upload.setEnabled(true);
+                capture.setEnabled(true);
+
+                FaceResponse result = response.body();
+
+                if (!response.isSuccessful() || result == null) {
+
+                    String errorMessage = "Face verification failed";
+
+                    if (response.code() == 401) {
+                        errorMessage =
+                                "Session expired. Please login again.";
+
+                    } else if (response.code() == 403) {
+                        errorMessage =
+                                "You are not authorized to perform this action.";
+
+                    } else if (response.code() == 404) {
+                        errorMessage =
+                                "Student, face registration, or attendance session not found.";
+
+                    } else if (response.code() == 400) {
+                        errorMessage =
+                                "Invalid face or attendance request.";
+
+                    } else if (response.code() == 409) {
+                        errorMessage =
+                                "Attendance already marked, session closed, or verification already used.";
+
+                    } else if (response.code() == 410) {
+                        errorMessage =
+                                "Verification expired. Start attendance again.";
+
+                    } else if (response.code() == 503) {
+                        errorMessage =
+                                "Face verification service is unavailable. Please try again later.";
+                    }
+
+                    info.setText(
+                            errorMessage + "\nHTTP " + response.code()
+                    );
+
+                    return;
+                }
+
+                // Face registration result
+                if (register) {
+
+                    if (result.registered) {
+
+                        info.setText(
+                                "Face registered successfully."
+                        );
+
+                    } else {
+
+                        info.setText(
+                                "Registration failed: " + result.message
+                        );
+                    }
+
+                    return;
+                }
+
+                // Attendance verification result
+                if (result.verified && result.attendanceMarked) {
+
+                    info.setText(
+                            "Face verified.\nAttendance marked PRESENT."
+                    );
+
+                } else if ("LOCATION".equals(result.reason)) {
+
+                    info.setText(
+                            "Attendance not marked.\n" + result.message
+                    );
+
+                } else {
+
+                    info.setText(
+                            "Face rejected: " + result.message
+                    );
+                }
+            }
+
+            @Override
+            public void onFailure(
+                    Call<FaceResponse> call,
+                    Throwable t
+            ) {
+
+                upload.setEnabled(true);
+                capture.setEnabled(true);
+
+                info.setText(
+                        "Network error:\n" + t.getMessage()
+                );
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        if (cameraProvider != null) {
+            cameraProvider.unbindAll();
+        }
+
+        super.onDestroy();
+    }
 }

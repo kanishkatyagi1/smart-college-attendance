@@ -60,7 +60,14 @@ public class FaceController {
         AttendanceVerificationAttempt attempt = verification.requirePending(attemptId, student);
         var geo = geofence.check(latitude, longitude, accuracy, mockLocation);
         if (!geo.allowed()) {
-            return Map.of("verified", false, "attendanceMarked", false, "reason", "LOCATION", "message", geo.message());
+            verification.resetAfterRejectedLocation(attemptId, student);
+
+            return Map.of(
+                    "verified", false,
+                    "attendanceMarked", false,
+                    "reason", "LOCATION",
+                    "message", geo.message()
+            );
         }
         try {
             Object faceResponse = callFaceService("/verify", student, image);

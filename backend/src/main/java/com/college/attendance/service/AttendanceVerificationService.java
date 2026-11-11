@@ -44,7 +44,7 @@ public class AttendanceVerificationService {
         return VerificationAttemptResponse.from(attempts.save(attempt));
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = AttemptExpiredException.class)
     public AttendanceVerificationAttempt requirePending(String attemptId, Student student) {
         AttendanceVerificationAttempt attempt = attempts.findWithLockById(attemptId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Verification attempt not found"));
@@ -82,7 +82,7 @@ public class AttendanceVerificationService {
         }
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = AttemptExpiredException.class)
     public AttendanceRecord markSuccessful(String attemptId, Student student, String method,
                                            Double latitude, Double longitude, Double accuracy, Double distance) {
         AttendanceVerificationAttempt attempt = attempts.findWithLockById(attemptId)
@@ -103,6 +103,32 @@ public class AttendanceVerificationService {
                 .markedAt(LocalDateTime.now()).status("PRESENT").verificationMethod(method)
                 .latitude(latitude).longitude(longitude).accuracyMeters(accuracy).distanceMeters(distance).build();
         return records.saveAndFlush(record);
+    }
+    
+    @Transactional(noRollbackFor = AttemptExpiredException.class)
+    public void resetAfterRejectedLocation(String attemptId, Student student) {
+        AttendanceVerificationAttempt attempt = attempts.findWithLockById(attemptId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Verification attempt not found"));
+
+        if (!attempt.getStudent().getId().equals(student.getId())) {
+            throw new AccessDeniedException(
+                    "Verification attempt belongs to another student");
+        }
+
+        if (attempt.getStatus() != VerificationAttemptStatus.VERIFYING) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Verification attempt is not being verified");
+        }
+
+        if (!attempt.getExpiresAt().isAfter(LocalDateTime.now())) {
+            attempt.setStatus(VerificationAttemptStatus.EXPIRED);
+            attempts.save(attempt);
+            throw new AttemptExpiredException();
+        }
+
+        attempt.setStatus(VerificationAttemptStatus.PENDING);
+        attempts.save(attempt);
     }
 
     @Transactional
