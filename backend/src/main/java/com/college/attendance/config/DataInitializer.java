@@ -39,6 +39,7 @@ public class DataInitializer {
                                 .password(enc.encode("student123"))
                                 .role(Role.STUDENT)
                                 .phone("9999999999")
+                                .emailVerified(true)
                                 .build()
                 );
 
@@ -62,6 +63,7 @@ public class DataInitializer {
                                 .email("teacher@example.com")
                                 .password(enc.encode("teacher123"))
                                 .role(Role.TEACHER)
+                                .emailVerified(true)
                                 .build()
                 );
 
@@ -93,6 +95,7 @@ public class DataInitializer {
                                 .email("hod@example.com")
                                 .password(enc.encode("hod123"))
                                 .role(Role.HOD)
+                                .emailVerified(true)
                                 .build()
                 );
             }

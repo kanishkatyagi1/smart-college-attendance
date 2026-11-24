@@ -13,6 +13,31 @@ android {
   targetSdk 35
   versionCode 1
   versionName '1.0'
+  // Ensure BuildConfig is generated (required for the DEV_LOCATION_OVERRIDE field).
+  buildConfigField 'boolean', 'DEV_LOCATION_OVERRIDE', 'false'
+ }
+
+ buildFeatures {
+  buildConfig true
+ }
+
+ buildTypes {
+  debug {
+   // Development-only: substitute ICT Building centre coordinates so that
+   // face verification can be tested outside the building during development.
+   // This field is explicitly false in release and cannot be changed at runtime.
+   buildConfigField 'boolean', 'DEV_LOCATION_OVERRIDE', 'true'
+   // ICT Building centre — must match geofence.center-lat/lng in application.properties.
+   buildConfigField 'double', 'DEV_LAT', '28.417341'
+   buildConfigField 'double', 'DEV_LNG', '77.523483'
+  }
+  release {
+   // Explicitly false: dead-code eliminated by R8/ProGuard in release APKs.
+   buildConfigField 'boolean', 'DEV_LOCATION_OVERRIDE', 'false'
+   buildConfigField 'double', 'DEV_LAT', '0.0'
+   buildConfigField 'double', 'DEV_LNG', '0.0'
+   minifyEnabled false
+  }
  }
 }
 
@@ -35,4 +60,7 @@ dependencies {
  implementation 'androidx.camera:camera-lifecycle:1.4.2'
  implementation 'androidx.camera:camera-view:1.4.2'
 
+ // Unit testing
+ testImplementation 'junit:junit:4.13.2'
+ testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
 }

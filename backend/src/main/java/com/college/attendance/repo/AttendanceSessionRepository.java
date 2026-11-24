@@ -5,17 +5,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public interface AttendanceSessionRepository
-        extends JpaRepository<AttendanceSession, Long> {
-
+public interface AttendanceSessionRepository extends JpaRepository<AttendanceSession, Long> {
     List<AttendanceSession> findByTeacherOrderByStartTimeDesc(Teacher t);
-
     Optional<AttendanceSession> findFirstBySectionAndActiveTrue(String section);
 
     Optional<AttendanceSession>
-        findFirstBySubjectAndSectionAndActiveTrueAndEndTimeAfter(
-            Subject subject,
-            String section,
-            LocalDateTime now
-        );
+    findFirstBySectionAndActiveTrueAndStartTimeBeforeAndEndTimeAfterOrderByStartTimeDesc(
+        String section, LocalDateTime startTime, LocalDateTime endTime
+    );
+
+    Optional<AttendanceSession>
+    findFirstBySubjectAndSectionAndActiveTrueAndEndTimeAfter(
+        Subject subject, String section, LocalDateTime now
+    );
+
+    List<AttendanceSession> findBySectionAndSubjectInAndEndTimeBefore(
+        String section, List<Subject> subjects, LocalDateTime now
+    );
 }

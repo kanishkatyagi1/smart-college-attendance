@@ -1,2 +1,15 @@
-package com.college.attendance.repo; import com.college.attendance.entity.*; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*;
-public interface AttendanceRecordRepository extends JpaRepository<AttendanceRecord,Long>{ boolean existsBySessionAndStudent(AttendanceSession s, Student st); List<AttendanceRecord> findByStudentOrderByMarkedAtDesc(Student st); List<AttendanceRecord> findBySession(AttendanceSession s); }
+package com.college.attendance.repo;
+
+import com.college.attendance.entity.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.*;
+
+public interface AttendanceRecordRepository extends JpaRepository<AttendanceRecord,Long> {
+    boolean existsBySessionAndStudent(AttendanceSession s, Student st);
+    List<AttendanceRecord> findByStudentOrderByMarkedAtDesc(Student st);
+    List<AttendanceRecord> findBySession(AttendanceSession s);
+
+    List<AttendanceRecord> findByStudentAndSessionIn(
+        Student student, List<AttendanceSession> sessions
+    );
+}

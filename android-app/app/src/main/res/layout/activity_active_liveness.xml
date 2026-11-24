@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#FDF8FF">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Liveness Check"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#292333" />
+
+    <!-- Progress counter e.g. "Step 1 of 2" -->
+    <TextView
+        android:id="@+id/alStepCounter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="13sp"
+        android:textColor="#6650A4"
+        android:paddingTop="4dp"
+        android:paddingBottom="2dp" />
+
+    <!-- Current action prompt — large, prominent -->
+    <TextView
+        android:id="@+id/alInstruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#292333"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp" />
+
+    <!-- Completed actions list (up to 3 lines with checkmarks) -->
+    <TextView
+        android:id="@+id/alChallenge1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="14sp"
+        android:textColor="#49454F"
+        android:paddingStart="4dp"
+        android:paddingBottom="2dp" />
+
+    <TextView
+        android:id="@+id/alChallenge2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="14sp"
+        android:textColor="#49454F"
+        android:paddingStart="4dp"
+        android:paddingBottom="8dp" />
+
+    <!-- Camera preview — takes remaining vertical space -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.camera.view.PreviewView
+            android:id="@+id/alCameraPreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#202020"
+            app:scaleType="fitCenter"
+            app:implementationMode="compatible" />
+
+        <!-- Oval face guide overlay drawn in code; placeholder View for alignment -->
+        <View
+            android:id="@+id/alFaceOval"
+            android:layout_width="200dp"
+            android:layout_height="260dp"
+            android:layout_gravity="center"
+            android:background="@drawable/oval_face_guide"
+            android:importantForAccessibility="no" />
+
+    </FrameLayout>
+
+    <!-- Progress bar: driven by nextExpectedSequence / MAX_FRAMES -->
+    <ProgressBar
+        android:id="@+id/alProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:max="100"
+        android:progress="0" />
+
+    <!-- Status / error message -->
+    <TextView
+        android:id="@+id/alStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="13sp"
+        android:textColor="#49454F"
+        android:paddingTop="6dp"
+        android:paddingBottom="4dp" />
+
+    <!-- Cancel button -->
+    <Button
+        android:id="@+id/alCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="CANCEL" />
+
+</LinearLayout>

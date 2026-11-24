@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Transparent oval with a white dashed stroke to guide face placement. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#00000000" />
+    <stroke
+        android:width="3dp"
+        android:color="#FFFFFFFF"
+        android:dashWidth="8dp"
+        android:dashGap="4dp" />
+</shape>
