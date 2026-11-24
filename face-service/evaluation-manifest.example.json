@@ -1,0 +1,37 @@
+{
+  "samples": [
+    {
+      "id": "live_a_registration_01",
+      "path": "genuine/live_a_registration_01.jpg",
+      "ground_truth": "genuine",
+      "subject_id": "subject_a",
+      "comparison_role": "registration",
+      "lighting": "even_indoor",
+      "distance": "arm_length"
+    },
+    {
+      "id": "live_a_verification_01",
+      "path": "genuine/live_a_verification_01.jpg",
+      "ground_truth": "genuine",
+      "subject_id": "subject_a",
+      "comparison_role": "verification",
+      "reference_id": "live_a_registration_01",
+      "lighting": "low_indoor",
+      "distance": "arm_length"
+    },
+    {
+      "id": "print_a_01",
+      "path": "print_attack/print_a_01.jpg",
+      "ground_truth": "print_attack",
+      "lighting": "even_indoor",
+      "distance": "arm_length"
+    },
+    {
+      "id": "screen_a_01",
+      "path": "screen_replay/screen_a_01.jpg",
+      "ground_truth": "screen_replay",
+      "lighting": "even_indoor",
+      "distance": "arm_length"
+    }
+  ]
+}

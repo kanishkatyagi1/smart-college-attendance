@@ -31,3 +31,18 @@ local.properties
 
 # Face datasets / generated face images
 face-service/faces/
+face-service/evaluation-data/
+
+.local-secrets/
+# Android generated files
+android-app/.gradle/
+android-app/**/build/
+android-app/local.properties
+
+# Backend generated files
+backend/target/
+
+# Local logs and temporary files
+*.log
+*.backup
+*.before-otp

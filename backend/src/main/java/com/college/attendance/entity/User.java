@@ -33,5 +33,15 @@ public class User {
     private String phone;
 
     @Builder.Default
-private boolean active = true;
+    private boolean active = true;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="approval_status")
+    @Builder.Default
+    private ApprovalStatus approvalStatus = ApprovalStatus.APPROVED;
+
+    @Builder.Default
+    @Column(name = "email_verified", nullable = false)
+    private boolean emailVerified = false;
 }
+

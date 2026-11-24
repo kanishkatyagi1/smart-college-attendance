@@ -1,35 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F7FB"
-    android:fillViewport="false"
-    android:scrollbars="vertical"
-    android:overScrollMode="always">
+    android:background="#F2F5FB"
+    android:fillViewport="true"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
-        <!-- Navigation Toolbar -->
+        android:padding="18dp">
+
+        <!-- TOP NAVIGATION -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_height="60dp"
             android:gravity="center_vertical"
-            android:padding="8dp"
-            android:background="#FFFFFF">
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:background="@drawable/bg_dashboard_toolbar"
+            android:elevation="4dp">
 
             <TextView
                 android:id="@+id/toolbarBack"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="← Back"
-                android:textColor="#07579B"
-                android:textSize="16sp"
+                android:text="‹  Back"
+                android:textColor="#2463A6"
+                android:textSize="15sp"
+                android:textStyle="bold"
                 android:visibility="gone"
                 android:clickable="true"
                 android:focusable="true"/>
@@ -38,11 +39,13 @@
                 android:id="@+id/profileButton"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
+                android:minWidth="48dp"
                 android:gravity="center"
-                android:paddingHorizontal="12dp"
-                android:text="👤 Profile"
-                android:textColor="#07579B"
+                android:paddingHorizontal="16dp"
+                android:text="Profile"
+                android:textColor="#174477"
                 android:textSize="14sp"
+                android:textStyle="bold"
                 android:clickable="true"
                 android:focusable="true"/>
 
@@ -50,92 +53,265 @@
                 android:id="@+id/logoutButton"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
+                android:minWidth="48dp"
                 android:gravity="center"
-                android:paddingHorizontal="12dp"
-                android:text="↪ Logout"
-                android:textColor="#B42318"
+                android:paddingHorizontal="16dp"
+                android:text="Logout"
+                android:textColor="#D04444"
                 android:textSize="14sp"
+                android:textStyle="bold"
                 android:clickable="true"
                 android:focusable="true"/>
 
         </LinearLayout>
-        <!-- Dashboard Header -->
+
+        <!-- HERO -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:orientation="vertical"
-            android:padding="20dp"
-            android:background="#FFFFFF"
-            android:elevation="3dp">
+            android:padding="24dp"
+            android:background="@drawable/bg_dashboard_hero"
+            android:elevation="7dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="S M A R T   C A M P U S"
+                android:textColor="#BBD9FF"
+                android:textSize="11sp"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TEACHER DASHBOARD"
-                android:textColor="#07579B"
+                android:layout_marginTop="20dp"
+                android:text="STUDENT MODULE"
+                android:textColor="#FFFFFF"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:letterSpacing="0.02" />
+                android:maxLines="2"/>
+
+            <View
+                android:layout_width="52dp"
+                android:layout_height="4dp"
+                android:layout_marginTop="13dp"
+                android:background="#78B7FF"/>
 
             <TextView
                 android:id="@+id/welcome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Welcome, Teacher"
-                android:textColor="#64748B"
-                android:textSize="15sp"
-                android:lineSpacingExtra="3dp" />
+                android:layout_marginTop="18dp"
+                android:text="Welcome"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="9dp"
+                android:background="@drawable/bg_dashboard_chip"
+                android:text="FACE RECOGNITION  |  SMART ATTENDANCE"
+                android:textColor="#E3F0FF"
+                android:textSize="10sp"
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
-        <!-- Section Heading -->
-        <TextView
+        <!-- STUDENT OVERVIEW -->
+        <LinearLayout
+            android:id="@+id/studentOverview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
-            android:layout_marginBottom="12dp"
-            android:text="QUICK ACCESS"
-            android:textColor="#334155"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.08" />
+            android:layout_marginTop="28dp"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <!-- Dynamic Actions and Cards -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your Academic Space"
+                android:textColor="#142D4E"
+                android:textSize="21sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="A quick look at your academic journey"
+                android:textColor="#8290A5"
+                android:textSize="12sp"/>
+
+            <!-- PROFILE CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp"
+                android:orientation="vertical"
+                android:padding="19dp"
+                android:background="@drawable/bg_dashboard_card"
+                android:elevation="3dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:gravity="center"
+                        android:text="ST"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_dashboard_hero"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="13dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="STUDENT PROFILE"
+                            android:textColor="#2463A6"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.12"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Academic Information"
+                            android:textColor="#263B59"
+                            android:textSize="15sp"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="13dp"
+                    android:background="#EAF0F8"/>
+
+                <TextView
+                    android:id="@+id/studentInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#435570"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="8dp"/>
+
+            </LinearLayout>
+
+            <!-- ATTENDANCE HEADING -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="27dp"
+                android:text="Attendance Overview"
+                android:textColor="#142D4E"
+                android:textSize="21sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Monitor your classes and stay on track"
+                android:textColor="#8290A5"
+                android:textSize="12sp"/>
+
+            <LinearLayout
+                android:id="@+id/attendanceSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical"/>
+
+        </LinearLayout>
+
+        <!-- WORKSPACE -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="29dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your Workspace"
+                android:textColor="#142D4E"
+                android:textSize="21sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Everything you need, all in one place."
+                android:textColor="#8290A5"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+        <!-- EXISTING DYNAMIC ACTIONS -->
         <LinearLayout
             android:id="@+id/actions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:layout_marginTop="17dp"
+            android:orientation="vertical"/>
 
-        <!-- Loading Indicator -->
         <ProgressBar
             android:id="@+id/progress"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:visibility="gone" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"/>
 
-        <!-- Dynamic Output -->
         <TextView
             android:id="@+id/output"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="15dp"
             android:padding="18dp"
-            android:background="#FFFFFF"
-            android:textColor="#334155"
+            android:background="@drawable/bg_dashboard_card"
+            android:textColor="#263B59"
             android:textSize="14sp"
-            android:lineSpacingExtra="4dp"
-            android:visibility="gone"
-            android:elevation="2dp" />
+            android:lineSpacingExtra="6dp"
+            android:visibility="gone"/>
 
-        <View
+        <!-- FOOTER -->
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="24dp" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="15dp"
+            android:gravity="center"
+            android:text="SMART CAMPUS  |  ATTENDANCE MADE SIMPLE"
+            android:textColor="#98A7BC"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"/>
 
     </LinearLayout>
-
 </ScrollView>
